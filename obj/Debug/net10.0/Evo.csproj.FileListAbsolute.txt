@@ -1,0 +1,14 @@
+/mnt/Storage/Projects/Evo/bin/Debug/net10.0/Evo
+/mnt/Storage/Projects/Evo/bin/Debug/net10.0/Evo.deps.json
+/mnt/Storage/Projects/Evo/bin/Debug/net10.0/Evo.runtimeconfig.json
+/mnt/Storage/Projects/Evo/bin/Debug/net10.0/Evo.dll
+/mnt/Storage/Projects/Evo/bin/Debug/net10.0/Evo.pdb
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.GeneratedMSBuildEditorConfig.editorconfig
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.AssemblyInfoInputs.cache
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.AssemblyInfo.cs
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.csproj.CoreCompileInputs.cache
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.dll
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/refint/Evo.dll
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.pdb
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/Evo.genruntimeconfig.cache
+/mnt/Storage/Projects/Evo/obj/Debug/net10.0/ref/Evo.dll
