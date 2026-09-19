@@ -12,7 +12,7 @@ public class Foods
 
         Random random = new Random();
 
-        this.Energy = random.Next(30, 100);
+        this.Energy = random.Next(50, 100);
         this.age = 0;
         this.position = worldposition;
     }

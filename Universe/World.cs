@@ -39,9 +39,17 @@ public  World(int worldheight , int worldwidth)
 
     public void UpdateWorld()
     {
+
         Timer timer = new Timer(100);
+        Timer Ctimer = new Timer(500);
+
         timer.Elapsed += this.ReRender;
+        timer.Elapsed += this.PrintCreatures;
+        Ctimer.Elapsed += this.UpdatesCreature;
+        Ctimer.Elapsed += this.WalkTest;
         timer.AutoReset = true;
+        Ctimer.AutoReset = true;
+        Ctimer.Start();
         timer.Start();
     }
 
@@ -49,7 +57,6 @@ public  World(int worldheight , int worldwidth)
 
     {
         Console.SetCursorPosition(0, 0);
-        
         for (int y = 0; y < worldHeight; y++)
         {
             for (int x = 0; x < worldWidth; x++)
@@ -63,14 +70,18 @@ public  World(int worldheight , int worldwidth)
                 }
                 else if (position.currentOccCreature is not null)
                 {
+                    if (!position.currentOccCreature.Alive)
+                    {
+                    Console.Write(".");
+                    }else{
                     if (position.currentOccCreature.gender == Gender.Male)
                     {
-                        Console.Write("%");
+                        Console.Write(position.currentOccCreature.age > 18 ? "T" : "t");
                     }
                     else
                     {
-                        Console.Write("O");
-                    }
+                        Console.Write(position.currentOccCreature.age > 18 ? "M" : "m");
+                    }}
 
                 }
                 else
@@ -115,7 +126,21 @@ public  World(int worldheight , int worldwidth)
     }
         }
 
+    public void UpdatesCreature(object sender, ElapsedEventArgs e)
+    {
+        foreach (var creature in Creatures)
+        {
+            creature.CreatureBehvae();
+        }
+    }
 
+      public void WalkTest(object sender, ElapsedEventArgs e)
+    {
+        foreach (var creature in Creatures)
+        {
+            creature.walk(worldpositions[1], worldpositions);
+        }
+    } 
 
 
     ///Add Creature

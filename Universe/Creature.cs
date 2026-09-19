@@ -62,24 +62,114 @@ public class Creature
     public void CreatureBehvae()
     {
 
-        Timer timer = new Timer(500);
-        timer.Elapsed += this.Age;
-
-        timer.AutoReset = true;
-        timer.Start();
+        Age();
+        BurnEnergy();
 
     }
 
 
-
-    //Creature Aging
-    public void Age(object sender, ElapsedEventArgs e)
-    {
-        this.age = +1;
-
-        if (this.age > 100) {
+    public void BurnEnergy()
+    { if (this.Energy <= 0) {
             this.Alive = false;
-        } 
+            this.CurrentPosition.currentOccCreature = null;
+
+        }else{
+        this.Energy -= 1;
+        }
+
     }
+    //Creature Aging
+    public void Age()
+    {
+         if (this.age >= 100) {
+            this.Alive = false;
+            this.CurrentPosition.currentOccCreature = null;
+
+        }else{
+        this.age += 1;
+        }
+    }
+
+
+
+    //walk
+    public void walk(WorldPosition positionToGo , List <WorldPosition> worldpositions)
+
+    {
+
+        int currentX = this.CurrentPosition.X;
+        int currentY = this.CurrentPosition.Y;
+
+        List<WorldPosition> checkpositions = new();
+
+        for (int offsetX = -1; offsetX <= 1; offsetX++)
+        {
+            for (int offsetY = -1; offsetY <= 1; offsetY++)
+            {
+                if (offsetX == 0 && offsetY == 0)
+                    continue;
+
+            WorldPosition? found = worldpositions.Find(
+                p => p.X == currentX + offsetX &&
+                     p.Y == currentY + offsetY
+            );
+
+         if (found != null)
+            {
+                checkpositions.Add(found);
+            }
+
+            }
+
+            
+
+
+        }
+
+       WorldPosition? idealPosition = null;
+int bestDistance = int.MaxValue;
+
+foreach (WorldPosition position in checkpositions)
+{
+    if (position == positionToGo)
+    {
+        idealPosition = position;
+        break;
+    }
+
+    if (position.currentOccCreature is not null ||
+        position.CurrentOccFood is not null)
+    {
+        continue;
+    }
+
+    int distanceX = Math.Abs(positionToGo.X - position.X);
+    int distanceY = Math.Abs(positionToGo.Y - position.Y);
+
+    int distance = Math.Max(distanceX, distanceY);
+
+    if (distance < bestDistance)
+    {
+        bestDistance = distance;
+        idealPosition = position;
+    }
+}
+
+      
+
+
+        
+
+        if (idealPosition is not null)
+        {
+            this.CurrentPosition.currentOccCreature= null;
+            this.CurrentPosition = idealPosition;
+            idealPosition.currentOccCreature = this;
+        }
+    }
+
+
+
+
 
 }
