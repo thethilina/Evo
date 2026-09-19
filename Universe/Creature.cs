@@ -1,4 +1,6 @@
 namespace Evo.Universe;
+
+using System.Timers;
 using Timer = System.Timers.Timer;
 public enum Gender
 {
@@ -10,25 +12,25 @@ public class Creature
 
 
 {
-    public Guid Id;
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string FirstName;
     public string FamName;
     public int age;
     public int Energy;
-    public Creature Mother;
-    public Creature Father;
+    public Creature? Mother;
+    public Creature? Father;
     public List<Creature> Kids = new();
     public List<Creature> Mates = new();
     public Gender gender;
+    private static Random random = new Random();
 
     public WorldPosition CurrentPosition;
     public bool Alive;
 
 
     //Create Random Creature
-    public Creature(List<WorldPosition> worldpositions )
+    public Creature(WorldPosition worldposition )
     {
-        Random random = new Random();
 
          string[] mailNames = ["Uru", "Tiru", "Kara", "Vuru", "Maku", "Lulu", "Gato", "Pudu", "Fuju", "Atu", "Dunu", "Rata"];
          string[] femaleNames = ["Sakala", "Kalya", "Uma", "Rashi", "Bani", "Wiruya", "Saya", "Maya", "Aguka", "Raya"];
@@ -39,16 +41,9 @@ public class Creature
         this.age = 0;
         this.Energy = random.Next(80, 100);
         this.Alive = true;
-        while(this.CurrentPosition is  null){
-
-            WorldPosition RandomPosition = worldpositions[random.Next(0, worldpositions.Count)];
-
-            if (RandomPosition.currentOccCreature is  null && RandomPosition.CurrentOccFood is  null)
-            {
-                this.CurrentPosition = RandomPosition;
-                break;
-            }  
-        }
+       
+        this.CurrentPosition = worldposition;
+       
 
         if (this.gender == Gender.Male)
         {
@@ -67,12 +62,24 @@ public class Creature
     public void CreatureBehvae()
     {
 
-        Timer timer = new Timer(1000);
+        Timer timer = new Timer(500);
+        timer.Elapsed += this.Age;
 
+        timer.AutoReset = true;
+        timer.Start();
 
-
-        
     }
 
+
+
+    //Creature Aging
+    public void Age(object sender, ElapsedEventArgs e)
+    {
+        this.age = +1;
+
+        if (this.age > 100) {
+            this.Alive = false;
+        } 
+    }
 
 }

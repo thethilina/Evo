@@ -2,7 +2,18 @@ namespace Evo.Universe;
 
 public class Foods
 {
-    public Guid Id;
+    public Guid Id { get; set; } = Guid.NewGuid();
     public int Energy;
     public int age;
+    public WorldPosition position;
+
+    public Foods(WorldPosition worldposition)
+    {
+
+        Random random = new Random();
+
+        this.Energy = random.Next(30, 100);
+        this.age = 0;
+        this.position = worldposition;
+    }
 }
