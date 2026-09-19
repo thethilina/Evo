@@ -1,262 +1,78 @@
-namespace Evo.Universe
+namespace Evo.Universe;
+using Timer = System.Timers.Timer;
+public enum Gender
 {
-    public enum gender
-    {
-        Male,
-        Female
-    }
-
-    public class Creature
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public int Health { get; set; }
-        public int Energy { get; set; }
-        public int Strength { get; set; }
-        public gender Gender { get; set; }
-
-        public int wasteToRelease { get; set; }
-
-        public WorldPositions currentPosition { get; set; }
-
-        public bool isAlive { get; set; } = true;
-
-
-        // Constructor
-        public Creature(
-            string name,
-            int age,
-            int health,
-            int energy,
-            int strength,
-            gender gender,
-            WorldPositions currentPosition)
-        {
-            Name = name;
-            Age = age;
-            Health = health;
-            Energy = energy;
-            Strength = strength;
-            Gender = gender;
-            this.currentPosition = currentPosition;
-        }
-
-
-  
-public void CreatureMove(WorldPositions positiontoMove, List<WorldPositions> worldpositions)
-{
-    int x = currentPosition.X;
-    int y = currentPosition.Y;
-
-    List<WorldPositions> checkpositions = new List<WorldPositions>();
-
-    for (int offsetX = -1; offsetX <= 1; offsetX++)
-    {
-        for (int offsetY = -1; offsetY <= 1; offsetY++)
-        {
-            if (offsetX == 0 && offsetY == 0)
-                continue;
-
-            WorldPositions? found = worldpositions.Find(
-                p => p.X == x + offsetX &&
-                     p.Y == y + offsetY
-            );
-
-            if (found != null)
-            {
-                checkpositions.Add(found);
-            }
-        }
-    }
-
-
-    int directionX = Math.Sign(positiontoMove.X - currentPosition.X);
-    int directionY = Math.Sign(positiontoMove.Y - currentPosition.Y);
-
-
-    WorldPositions? idealPosition = null;
-
-    int bestScore = -1;
-
-
-    foreach (WorldPositions position in checkpositions)
-    {
-        if (position == positiontoMove)
-        {
-            idealPosition = position;
-            break;
-        }
-
-
-        if (position.OccupyingCreature is null &&
-            position.OccupyingFood is null)
-        {
-            int moveX = Math.Sign(position.X - currentPosition.X);
-            int moveY = Math.Sign(position.Y - currentPosition.Y);
-
-            int score = 0;
-
-
-            if (moveX == directionX)
-            {
-                score++;
-            }
-
-
-            if (moveY == directionY)
-            {
-                score++;
-            }
-
-
-            if (score > bestScore)
-            {
-                bestScore = score;
-                idealPosition = position;
-            }
-        }
-    }
-
-
-    if (idealPosition != null)
-    {
-        currentPosition.OccupyingCreature = null;
-
-        currentPosition = idealPosition;
-
-        currentPosition.OccupyingCreature = this;
-    }
+    Male,
+    Female
 }
-        public static Creature CreateRandom(WorldPositions worldPositions)
-        {
-            string[] maleFirstNames =
+public class Creature
+
+
+
+{
+    public Guid Id;
+    public string FirstName;
+    public string FamName;
+    public int age;
+    public int Energy;
+    public Creature Mother;
+    public Creature Father;
+    public List<Creature> Kids = new();
+    public List<Creature> Mates = new();
+    public Gender gender;
+
+    public WorldPosition CurrentPosition;
+    public bool Alive;
+
+
+    //Create Random Creature
+    public Creature(List<WorldPosition> worldpositions )
+    {
+        Random random = new Random();
+
+         string[] mailNames = ["Uru", "Tiru", "Kara", "Vuru", "Maku", "Lulu", "Gato", "Pudu", "Fuju", "Atu", "Dunu", "Rata"];
+         string[] femaleNames = ["Sakala", "Kalya", "Uma", "Rashi", "Bani", "Wiruya", "Saya", "Maya", "Aguka", "Raya"];
+
+         string[] familyNames = ["Agakari", "Makari", "Gogerimahami", "Pruthuvipathy", "Sagani", "Adirukathi"];
+
+        this.gender = (Gender)random.Next(0, 2);
+        this.age = 0;
+        this.Energy = random.Next(80, 100);
+        this.Alive = true;
+        while(this.CurrentPosition is  null){
+
+            WorldPosition RandomPosition = worldpositions[random.Next(0, worldpositions.Count)];
+
+            if (RandomPosition.currentOccCreature is  null && RandomPosition.CurrentOccFood is  null)
             {
-                "John",
-                "Michael",
-                "David",
-                "James",
-                "Robert"
-            };
-
-            string[] femaleFirstNames =
-            {
-                "Mary",
-                "Jennifer",
-                "Linda",
-                "Elizabeth",
-                "Susan"
-            };
-
-            string[] lastNames =
-            {
-                "Smith",
-                "Johnson",
-                "Williams",
-                "Jones",
-                "Brown"
-            };
-
-
-            // Random gender
-            gender randomGender =
-                (gender)Random.Shared.Next(0, 2);
-
-
-            // Random first name
-            string firstName;
-
-            if (randomGender == gender.Male)
-            {
-                firstName =
-                    maleFirstNames[
-                        Random.Shared.Next(maleFirstNames.Length)
-                    ];
-            }
-            else
-            {
-                firstName =
-                    femaleFirstNames[
-                        Random.Shared.Next(femaleFirstNames.Length)
-                    ];
-            }
-
-
-            // Random last name
-            string lastName =
-                lastNames[
-                    Random.Shared.Next(lastNames.Length)
-                ];
-
-
-            // Full name
-            string name = $"{firstName} {lastName}";
-
-
-            // Random stats
-            int age = 0;
-
-            int health =
-               100;
-
-            int energy =
-                Random.Shared.Next(50, 101);
-
-            int strength =
-                Random.Shared.Next(1, 21);
-
-            int wasteToRelease =
-               0;
-
-
-
-
-            Creature creature = new Creature(
-                name,
-                age,
-                health,
-                energy,
-                strength,
-                randomGender,
-                worldPositions
-            );
-
-            worldPositions.OccupyingCreature = creature;
-            creature.wasteToRelease = wasteToRelease;
-            creature.isAlive = true;
-
-
-            return creature;
+                this.CurrentPosition = RandomPosition;
+                break;
+            }  
         }
 
-
-        public void AgeCreature()
+        if (this.gender == Gender.Male)
         {
-            Age++;
-            Health -= 1;
-            Energy -= 1;
-
-            if (Health <= 0 || Energy <= 0)
-            {
-                isAlive = false;
-                currentPosition.OccupyingCreature = null;
-            }
+            this.FirstName = mailNames[random.Next(0,mailNames.Length)];
         }
-        public void displayCreatre()
+        else
         {
-            Console.WriteLine($"Id: {Id}");
-            Console.WriteLine($"Name: {Name}");
-            Console.WriteLine($"Age: {Age}");
-            Console.WriteLine($"Health: {Health}");
-            Console.WriteLine($"Energy: {Energy}");
-            Console.WriteLine($"Strength: {Strength}");
-            Console.WriteLine($"Gender: {Gender}");
-            Console.WriteLine(
-                $"Current Position: ({currentPosition.X}, {currentPosition.Y})"
-            );
-            Console.WriteLine($"Is Alive: {isAlive}");
-            Console.WriteLine($"Waste To Release: {wasteToRelease}");
+            this.FirstName = femaleNames[random.Next(0, femaleNames.Length)];
         }
+
+        this.FamName = familyNames[random.Next(0,familyNames.Length)];
+
     }
+
+
+    public void CreatureBehvae()
+    {
+
+        Timer timer = new Timer(1000);
+
+
+
+        
+    }
+
+
 }
