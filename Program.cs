@@ -28,7 +28,6 @@ class Program
                 {
                     world.addRandomCreature();
                 }   
-
                 else if (key == ConsoleKey.F)
                 {
                     world.addRandomFood();

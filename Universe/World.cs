@@ -1,23 +1,25 @@
 using System.Timers;
-
+using System.Diagnostics;
 namespace Evo.Universe;
 using Timer = System.Timers.Timer;
 
 
 public class World
 {
+    
     public Guid Id { get; set; } = Guid.NewGuid();
     public int worldHeight;
     public int worldWidth;
     public List<WorldPosition> worldpositions = new();
     public List<Creature> Creatures = new();
     public List<Foods> Foods = new();
-
+private Stopwatch simulationTimer = new Stopwatch();
 
 
 public  World(int worldheight , int worldwidth)
     {
         Console.Clear();
+        Console.SetCursorPosition(0, 0);
 
         this.worldHeight = worldheight;
         this.worldWidth = worldwidth;
@@ -40,13 +42,15 @@ public  World(int worldheight , int worldwidth)
     public void UpdateWorld()
     {
 
-        Timer timer = new Timer(100);
+        Timer timer = new Timer(500);
         Timer Ctimer = new Timer(500);
+    simulationTimer.Start();
 
         timer.Elapsed += this.ReRender;
         timer.Elapsed += this.PrintCreatures;
+
         Ctimer.Elapsed += this.UpdatesCreature;
-        Ctimer.Elapsed += this.WalkTest;
+
         timer.AutoReset = true;
         Ctimer.AutoReset = true;
         Ctimer.Start();
@@ -100,39 +104,45 @@ public  World(int worldheight , int worldwidth)
 
 
     //PrintCreatures
-    public void PrintCreatures(object sender, ElapsedEventArgs e)
+public void PrintCreatures(object sender, ElapsedEventArgs e)
 {
+    Console.SetCursorPosition(0, worldHeight + 2);
 
-        if (Creatures.Count != 0)
-        {
-            Console.SetCursorPosition(0, worldHeight + 2);
+    TimeSpan time = simulationTimer.Elapsed;
 
-            Console.WriteLine("___________ CREATURES ___________");
+    int population = Creatures.Count(c => c.Alive);
+    int dead = Creatures.Count(c => !c.Alive);
 
-        Console.WriteLine();
-        
-        foreach (Creature creature in Creatures)
-    {
-        Console.WriteLine(
-            $"{creature.FirstName} {creature.FamName} | " +
-            $"Gender: {creature.gender} | " +
-            $"Age: {creature.age} | " +
-            $"Energy: {creature.Energy} | " +
-            $"Alive: {creature.Alive}"
-        );
-        }
+    Console.WriteLine("___________ SIMULATION ___________");
     Console.WriteLine();
-            Console.WriteLine("_________________");
-    }
-        }
 
-    public void UpdatesCreature(object sender, ElapsedEventArgs e)
+    Console.WriteLine(
+        $"Time Passed : {time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}"
+    );
+
+    Console.WriteLine($"Population  : {population}");
+    Console.WriteLine($"Dead        : {dead}");
+    Console.WriteLine($"Food        : {Foods.Count}");
+
+    Console.WriteLine();
+
+    Console.WriteLine("_______________________________");
+}
+
+   public void UpdatesCreature(object sender, ElapsedEventArgs e)
+{
+    foreach (var creature in Creatures.ToList())
     {
-        foreach (var creature in Creatures)
-        {
-            creature.CreatureBehvae();
-        }
+        if (!creature.Alive)
+            continue;
+
+        creature.CreatureBehvae(
+            Foods,
+            worldpositions,
+            Creatures
+        );
     }
+}
 
       public void WalkTest(object sender, ElapsedEventArgs e)
     {
@@ -169,6 +179,33 @@ public  World(int worldheight , int worldwidth)
 
     }
 
+    public void EatTest(object sender, ElapsedEventArgs e)
+{
+    foreach (Creature creature in Creatures)
+    {
+        if (!creature.Alive)
+            continue;
+
+        Foods? food = creature.lookforFood(Foods);
+
+        if (food is null)
+            continue;
+
+        if (creature.CurrentPosition == food.position)
+        {
+            creature.eat(food , Foods);
+
+            food.position.CurrentOccFood = null;
+            Foods.Remove(food);
+
+            Console.Beep();
+        }
+        else
+        {
+            creature.walk(food.position, worldpositions);
+        }
+    }
+}
     //Add Food
     public void addRandomFood()
     {
