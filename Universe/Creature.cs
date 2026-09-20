@@ -174,7 +174,7 @@ public class Creature
     //Creature Aging
     public void Age()
     {
-         if (this.age >= 100) {
+         if (this.age >= 500) {
             this.Alive = false;
             this.CurrentPosition.currentOccCreature = null;
 
@@ -340,10 +340,7 @@ foreach (WorldPosition position in checkpositions)
             {
                 continue;
             }
-                if (creature.Mates.Count > 0)
-    {
-        continue;
-    }
+    
 
             int distanceX = Math.Abs(creature.CurrentPosition.X - CurrentPosition.X);
             int distanceY = Math.Abs(creature.CurrentPosition.Y - CurrentPosition.Y);
@@ -415,11 +412,10 @@ foreach (WorldPosition position in checkpositions)
             creatures.Add(baby);
             DropPosition.currentOccCreature = baby;
             this.Energy = this.Energy - 30;
-            mate.Energy = this.Energy - 30;
+            mate.Energy = this.Energy - 5;
             this.Kids.Add(baby);
             mate.Kids.Add(baby);
-            this.Mates.Add(mate);
-            mate.Mates.Add(this);
+     
         }
 
     }

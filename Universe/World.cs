@@ -42,8 +42,8 @@ public  World(int worldheight , int worldwidth)
     public void UpdateWorld()
     {
 
-        Timer timer = new Timer(500);
-        Timer Ctimer = new Timer(500);
+        Timer timer = new Timer(100);
+        Timer Ctimer = new Timer(100);
     simulationTimer.Start();
 
         timer.Elapsed += this.ReRender;
